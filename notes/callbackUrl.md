@@ -1,0 +1,6 @@
+- user with no session tries to visit protected routes like orders,...
+- middleware catches it
+  -- creates new url with signIn path + loads callback url to the url
+  -- value of callback url is the pathname of the page the user tried to visit
+  -- redirect to signIn page with callback loaded
+  -- the callback url is used after successful signIn

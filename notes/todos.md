@@ -1,0 +1,7 @@
+- Home page trust bar simplifying page
+- AdminOverviewPage simplify boxes by creating 1 box and looping over
+- limit review comment max text
+- guest user proceed to checkout with callback url to signIn page
+- polish pagination
+- pages like admin order table modifying pagination style
+- order items table on pages like place order page,...
