@@ -16,7 +16,6 @@ async function CartPage() {
       </section>
     )
 
-  // total number of cartItems
   const subTotals =
     cartItems?.reduce((acc, item) => {
       return acc + item.qty

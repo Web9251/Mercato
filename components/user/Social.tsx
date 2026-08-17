@@ -4,32 +4,31 @@ import { FcGoogle } from "react-icons/fc"
 import { Button } from "../ui/button"
 import { FaGithub } from "react-icons/fa6"
 import { authClient } from "@/lib/auth-client"
-import { Separator } from "../ui/separator"
-import { FieldSeparator } from "../ui/field"
 
-function Social() {
+function Social({ callbackUrl }: { callbackUrl: string | undefined }) {
   const googleSignIn = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: callbackUrl,
     })
   }
   const githubSignIn = async () => {
     await authClient.signIn.social({
       provider: "github",
-      callbackURL: "/",
+      callbackURL: callbackUrl,
     })
   }
 
   return (
     <div>
-      <FieldSeparator className="mt-3">Or continue with</FieldSeparator>
-      <div className="grid grid-cols-2 items-center w-full gap-x-2 mt-8">
+      <div className="flex flex-col w-full gap-y-5 my-8">
         <Button variant="outline" size="lg" onClick={googleSignIn}>
-          <FcGoogle className="h-5 w-5" />
+          Sign in with Google
+          <FcGoogle className="h-5 w-5 ml-2" />
         </Button>
         <Button variant="outline" size="lg" onClick={githubSignIn}>
-          <FaGithub className="h-5 w-5" />
+          Sign in with GitHub
+          <FaGithub className="h-5 w-5 ml-2" />
         </Button>
       </div>
     </div>

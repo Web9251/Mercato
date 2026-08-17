@@ -14,23 +14,26 @@ const isPublicRoute = (pathname: string) => {
 export async function proxy(request: NextRequest) {
   const { nextUrl } = request
 
+  if (nextUrl.pathname.startsWith("/api/auth")) {
+    return NextResponse.next()
+  }
+
   const headers = new Headers(request.headers)
   headers.set("x-pathname", nextUrl.pathname)
 
   const sessionCookie = getSessionCookie(request)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-  // other checks don't work here
-  // as we can't differentiate a user as anonymous or signedIn user here
-
-  // // redirect guests trying to access protected routes
   if (!sessionCookie && !isAuthRoute && !isPublicRoute(nextUrl.pathname)) {
-    const loginUrl = new URL("/sign-in", nextUrl.origin) // construct url
-    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname) // add search params to it
+    const loginUrl = new URL("/sign-in", nextUrl.origin)
+    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname)
+
     return NextResponse.redirect(loginUrl)
   }
 
-  return NextResponse.next({ request: { headers } })
+  return NextResponse.next({
+    request: { headers },
+  })
 }
 
 export const config = {

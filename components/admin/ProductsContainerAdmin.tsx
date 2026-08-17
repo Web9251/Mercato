@@ -50,7 +50,6 @@ function ProductsContainerAdmin({ productsStr }: { productsStr: string }) {
                 >
                   <Link href={`/admin/products/${slug}`}>Edit</Link>
                 </Button>
-                {/* <DeleteProduct id={id} /> */}
                 <DeleteAlert id={id} path="products" />
               </TableCell>
             </TableRow>

@@ -5,12 +5,9 @@ import {
   orderItemSchema,
   orderSchema,
   paymentMethodSchema,
-  paymentResultSchema,
   productSchema,
   reviewSchema,
   shippingAddressSchema,
-  signInSchema,
-  signUpSchema,
   updateUserSchema,
   userProfileSchema,
 } from "@/utils/schemas"
@@ -19,29 +16,16 @@ import { LucideIcon } from "lucide-react"
 import { IconType } from "react-icons/lib"
 import { auth } from "@/lib/auth"
 
-/* ─── schema types ─────────────────────────────────────────────────────────────── */
-
-export type signInFields = z.infer<typeof signInSchema>
-export type signUpFields = z.infer<typeof signUpSchema>
 export type productFields = z.input<typeof productSchema>
-export type productFields2 = z.input<typeof productSchema>
-export type CartItemInferred = z.infer<typeof cartItemSchema>
-export type CartItem = z.infer<typeof cartItemSchema>
 export type CartItemInput = z.input<typeof cartItemSchema>
 export type Cart = z.infer<typeof cartSchema>
-export type CartInferred = z.infer<typeof cartSchema>
 export type ShippingAddress = z.input<typeof shippingAddressSchema>
 export type PaymentMethods = z.input<typeof paymentMethodSchema>
 export type Order = z.infer<typeof orderSchema>
-export type OrderItem = z.infer<typeof orderItemSchema>
 export type OrderItemInput = z.input<typeof orderItemSchema>
-export type PaymentResult = z.infer<typeof paymentResultSchema>
 export type UserProfile = z.input<typeof userProfileSchema>
 export type UpdateUserFields = z.input<typeof updateUserSchema>
-export type ReviewFields = z.infer<typeof reviewSchema>
 export type ReviewFieldsInput = z.input<typeof reviewSchema>
-
-/* ─── modified prisma types ─────────────────────────────────────────────────────────────── */
 
 export type selectInputValue = {
   value: string
@@ -79,8 +63,6 @@ export type ProductCategory = {
   value: string
 }
 
-/* ─── modified prisma types ─────────────────────────────────────────────────────────────── */
-
 export type ReviewWithUser = Prisma.ReviewGetPayload<{
   include: {
     user: {
@@ -109,6 +91,6 @@ export type RatingData = {
 export type OnReviewChange = (data: {
   newReview: ReviewWithUser
   state: "create" | "edit"
-}) => void // callback prop
+}) => void
 
-export type SessionUser = typeof auth.$Infer.Session.user // ✅ includes role
+export type SessionUser = typeof auth.$Infer.Session.user

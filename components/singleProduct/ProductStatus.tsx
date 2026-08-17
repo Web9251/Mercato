@@ -36,7 +36,6 @@ async function ProductStatus({ whole, decimal, productId, stock }: Props) {
         )}
       </div>
 
-      {/*  ───Add to cart ─────────────────────────────────────────────────────────────── */}
       {stock && (
         <UpdateCartItemButton
           productId={productId}

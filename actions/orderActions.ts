@@ -7,7 +7,6 @@ import {
   renderError,
   renderErrorWithRedirect,
 } from "./productActions"
-import { currentUser } from "@/hooks/currentUser"
 import {
   orderSchema,
   paymentMethodSchema,
@@ -78,9 +77,6 @@ export const createOrderAction = async () => {
       }
     }
 
-    /* ─── check users payment method & shipping address ─────────────────────────────────────────────────────────────── */
-
-    // if no payment method && shipping address return
     const dbUser = await prisma.user.findUnique({ where: { id: user.id } })
 
     if (!dbUser?.paymentMethod) {
@@ -99,8 +95,6 @@ export const createOrderAction = async () => {
       }
     }
 
-    /* ─── construct order object & validate ─────────────────────────────────────────────────────────────── */
-    // construct order object from userInfo and cartValues and validate
     const orderObject = {
       userId: user.id,
       itemsPrice: cart.itemsPrice,
@@ -113,16 +107,11 @@ export const createOrderAction = async () => {
 
     const validatedOrderObject = await validateWithZod(orderObject, orderSchema)
 
-    /* ─── run transaction - To create order & orderItem, clear cart & return orderId ─────────────────────────────────────────────────────────────── */
-
-    // create order & orderItem
     const orderId = await prisma.$transaction(async (tx) => {
-      // create order
       const order = await tx.order.create({
         data: validatedOrderObject,
       })
 
-      // create orderItem
       await tx.orderItem.createMany({
         data: cart.cartItems.map((item) => ({
           orderId: order.id,
@@ -135,12 +124,10 @@ export const createOrderAction = async () => {
         })),
       })
 
-      // remove cartItems
       await tx.cartItem.deleteMany({
         where: { cartId: cart.id },
       })
 
-      // clear/reset cart
       await tx.cart.update({
         where: {
           id: cart.id,
@@ -158,7 +145,7 @@ export const createOrderAction = async () => {
 
     if (!orderId) throw new Error("Order not created")
 
-    revalidatePath(`/order/${orderId}`) // to display latest value on cart button
+    revalidatePath(`/order/${orderId}`)
     return {
       success: true,
       message: "Order created successfully",
@@ -176,9 +163,7 @@ export const getUserOrders = async (limit: number, page: number) => {
     where: {
       userId: user.id,
     },
-    // skip all orders that are less than skip value
     skip: (page - 1) * limit,
-    // limit the amount of orders to display
     take: limit,
   })
 
@@ -239,19 +224,14 @@ export const getAdminDashboardData = async () => {
     totalSales,
     recentSales,
     totalRevenue,
-    paidOrders, // ✅ added for monthly grouping,
+    paidOrders,
   ] = await Promise.all([
-    // users/customers
     (await prisma.user.count()) - Number(process.env.NON_COSTUMER_USERS),
-    // products
     await prisma.product.count(),
-    // all orders
     await prisma.order.count(),
-    // paid orders only / sales
     await prisma.order.count({
       where: { isPaid: true },
     }),
-    // recent sales
     await prisma.order.findMany({
       where: {
         isPaid: true,
@@ -267,13 +247,11 @@ export const getAdminDashboardData = async () => {
         totalPrice: true,
       },
     }),
-    // total revenue
     await prisma.order.aggregate({
       where: { isPaid: true },
       _sum: { totalPrice: true },
     }),
 
-    // ✅ for monthly grouping / chart
     await prisma.order.findMany({
       where: { isPaid: true },
       select: { createdAt: true, totalPrice: true },
@@ -283,25 +261,17 @@ export const getAdminDashboardData = async () => {
 
   const monthlyMap = new Map<string, number>()
   paidOrders.forEach((order) => {
-    // for each order format the date
     const monthLabel = new Date(order.createdAt).toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",
     })
 
-    // set it to the map
     monthlyMap.set(
       monthLabel,
       (monthlyMap.get(monthLabel) ?? 0) + Number(order.totalPrice)
-      // check if this key has a value
-      // if it doesn't have value set it as 0 then add total price
-      //  returns { 'Jun 2026' => 667.32,... }
     )
   })
-  // first convert it as an array of arrays
-  // [['Jun 2026', revenue: 667.32],...]
-  // then to array of objects
-  //  [ { month: 'Jun 2026', revenue: 667.32 },... ]
+
   const monthlyRevenue = Array.from(monthlyMap, ([month, revenue]) => ({
     month,
     revenue,
@@ -309,10 +279,10 @@ export const getAdminDashboardData = async () => {
 
   return {
     totalCustomers,
-    totalOrders, // useful for tracking abandoned/pending orders
+    totalOrders,
     totalProducts,
     recentSales,
-    totalRevenue: totalRevenue._sum ?? 0, // if no paid order return 0
+    totalRevenue: totalRevenue._sum ?? 0,
     totalSales,
     monthlyRevenue,
   }

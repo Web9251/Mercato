@@ -1,6 +1,8 @@
 "use client"
+
 import Image from "next/image"
 import { useState } from "react"
+
 function SingleProductImage({ images }: { images: string[] }) {
   const [currentImage, setCurrentImage] = useState(images[0])
 

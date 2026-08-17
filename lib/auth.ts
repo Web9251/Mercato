@@ -12,6 +12,8 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({ adapter })
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
+
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -33,12 +35,12 @@ export const auth = betterAuth({
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
 
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     },
   },
 

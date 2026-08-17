@@ -23,7 +23,6 @@ function IncrementDecrementButtons({
 }: Props) {
   return (
     <div className={cn(`flex gap-4 items-center justify-center ${className}`)}>
-      {/* Minus button */}
       <Button
         variant="outline"
         className="dark:bg-transparent"
@@ -35,7 +34,6 @@ function IncrementDecrementButtons({
 
       {children}
 
-      {/* Plus button */}
       <Button
         variant="outline"
         className="dark:bg-transparent"

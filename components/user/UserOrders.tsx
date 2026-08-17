@@ -11,6 +11,7 @@ import { formatId, formatPrice } from "@/utils/utils"
 import dayjs from "dayjs"
 import { Button } from "../ui/button"
 import Link from "next/link"
+
 function UserOrders({ data }: { data: Order[] }) {
   return (
     <Table className="w-full">

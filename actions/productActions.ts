@@ -65,10 +65,8 @@ export const createProductAction = async (formData: productFields) => {
     const product = await prisma.product.create({
       data: {
         ...validatedData,
-        // Prisma does NOT accept plain JS null directly for JSON fields.
-        //
+
         banner: (validatedData.isFeatured && validatedData.banner) || undefined,
-        // set is featured to true only if banner exist
         isFeatured: validatedData.banner ? true : false,
       },
     })
@@ -135,7 +133,6 @@ export const getAdminProductBySlug = async (slug: string) => {
   return product
 }
 
-// Todo: return redirect or not?
 export const editProductAction = async (
   slug: string,
   formData: productFields
@@ -153,25 +150,20 @@ export const editProductAction = async (
       productSchema
     )
 
-    // Always update by Id
     const updatedProduct = await prisma.product.update({
       where: { id: product.id },
       data: {
         ...updateData,
 
-        // b/c null assignable to jsonValue
         banner:
           updateData.isFeatured && updateData.banner
             ? updateData.banner
             : Prisma.JsonNull,
-        // if no banner set is featured to false
         isFeatured: updateData.isFeatured && updateData.banner ? true : false,
-        // only update slug if it actually changed
-        // else unique error occurs
+
         ...(slug !== newSlug && { slug: newSlug }),
       },
     })
-    // revalidatePath(`/products/${updatedProduct.slug}`)
     return {
       success: true,
       message: `${updatedProduct.name} updated successfully`,
@@ -207,8 +199,6 @@ export const getAllProducts = async ({
 }) => {
   const PRODUCTS_PER_PAGE = 12
 
-  /* ─── build where ─────────────────────────────────────────────────────────────── */
-
   const conditions = []
 
   if (search) {
@@ -225,44 +215,29 @@ export const getAllProducts = async ({
   }
 
   if (price && price !== "all") {
-    const [min, max] = price.split("-").map(Number) // ✅ numbers not strings
+    const [min, max] = price.split("-").map(Number)
     conditions.push({
       price: {
         gte: min,
-        ...(max !== 0 && { lte: max }), // ✅ 0 means no upper limit
+        ...(max !== 0 && { lte: max }),
       },
     })
   }
 
   if (rating && rating !== "all") {
     conditions.push({
-      rating: { gte: Number(rating) }, // ✅ convert to number
+      rating: { gte: Number(rating) },
     })
   }
 
   const where = conditions.length ? { AND: conditions } : {}
-  // where: AND:[{},{},{},...] where syntax
 
-  /* ─── build sort ─────────────────────────────────────────────────────────────── */
-
-  // orderBy: [{ price: "asc" }, { rating: "asc" }], orderBy syntax
   const orderBy = {
     newest: [{ createdAt: "desc" as const }],
-    lowest: [
-      { price: "asc" as const },
-      { rating: "desc" as const }, // tiebreaker — best rated if same price
-    ],
-    highest: [
-      { price: "desc" as const },
-      { rating: "desc" as const }, // tiebreaker — best rated if same price
-    ],
-    rating: [
-      { rating: "desc" as const },
-      { createdAt: "desc" as const }, // tiebreaker — newest if same rating
-    ],
+    lowest: [{ price: "asc" as const }, { rating: "desc" as const }],
+    highest: [{ price: "desc" as const }, { rating: "desc" as const }],
+    rating: [{ rating: "desc" as const }, { createdAt: "desc" as const }],
   }[sort] ?? [{ createdAt: "desc" as const }]
-
-  /* ─── get products & count ─────────────────────────────────────────────────────────────── */
 
   const [products, totalCount] = await Promise.all([
     await prisma.product.findMany({
@@ -276,18 +251,12 @@ export const getAllProducts = async ({
 
   return {
     products,
-    totalCount, // total products
+    totalCount,
     totalPages: Math.ceil(totalCount / PRODUCTS_PER_PAGE),
   }
 }
 
 export const updateProductRating = async (productId: string) => {
-  // invoked when creating & updating product review
-
-  // increment approach — fragile
-  // rating = (rating * numReviews + newRating) / (numReviews + 1)
-
-  // recalculate from ALL reviews in DB
   const ratingStats = await prisma.review.aggregate({
     where: { productId },
     _avg: { rating: true },

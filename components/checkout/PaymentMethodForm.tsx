@@ -8,7 +8,6 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
   FieldSet,
   FieldTitle,
 } from "../ui/field"

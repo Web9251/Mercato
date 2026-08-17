@@ -27,9 +27,7 @@ function ReviewCard({ review, isOwn, onReviewChange, userReview }: Props) {
   const letter = review.user.name.slice(0, 2).toUpperCase()
   return (
     <article className="py-5 first:pt-0">
-      {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-3">
-        {/* Avatar + name + date */}
         <div className="flex items-center gap-2.5">
           <Avatar className="h-8 w-8 shrink-0">
             <AvatarImage src={image!} alt={name} />
@@ -48,9 +46,7 @@ function ReviewCard({ review, isOwn, onReviewChange, userReview }: Props) {
           </div>
         </div>
 
-        {/* Stars + Edit button (own review only) */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* <Stars value={review.rating} /> */}
           <Rating rate={rating} />
           {isOwn && (
             <ReviewModal
@@ -61,7 +57,6 @@ function ReviewCard({ review, isOwn, onReviewChange, userReview }: Props) {
         </div>
       </div>
 
-      {/* Body */}
       <p className="text-sm font-medium mb-1">{title}</p>
       <p className="text-sm text-muted-foreground leading-relaxed">{comment}</p>
 

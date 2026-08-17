@@ -1,12 +1,12 @@
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card"
+import { Card, CardContent, CardFooter } from "../ui/card"
 import Image from "next/image"
 import { type Product } from "@/generated/prisma/client"
 import Link from "next/link"
-import { formatPrice, formatPriceUi } from "@/utils/utils"
+import { formatPriceUi } from "@/utils/utils"
 import { UploadImage } from "@/utils/types"
 
 function ProductContainer({ product }: { product: Product }) {
-  const { name, brand, rating, price, images, slug } = product
+  const { name, brand, price, images, slug } = product
   const productsImages = images as UploadImage[]
   const [whole, decimal] = formatPriceUi(price).split(".")
 

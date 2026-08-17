@@ -5,7 +5,7 @@ import {
   getSingleProductById,
   renderError,
 } from "./productActions"
-import { cookies, headers } from "next/headers"
+import { headers } from "next/headers"
 import { currentUser } from "@/hooks/currentUser"
 import prisma from "@/lib/prisma"
 import { CartItem } from "@/generated/prisma/client"
@@ -42,7 +42,6 @@ export const addToCartAction = async (productId: string) => {
 
     const cart = await getOrCreateCart()
 
-    /* ─── create item object & validate ─────────────────────────────────────────────────────────────── */
     const { name, slug, price, images } = product
     const image = (images as UploadImage[])[0].url
 
@@ -58,8 +57,6 @@ export const addToCartAction = async (productId: string) => {
 
     const validatedItems = await validateWithZod(item, cartItemSchema)
 
-    /* ─── Check if Item exist in cart ─────────────────────────────────────────────────────────────── */
-
     const existingItem = await prisma.cartItem.findFirst({
       where: {
         cartId: cart.id,
@@ -67,11 +64,7 @@ export const addToCartAction = async (productId: string) => {
       },
     })
 
-    /* ─── if item is not in the cart ─────────────────────────────────────────────────────────────── */
-
-    // create new Item
     if (!existingItem) {
-      // Create cart item
       const cartItem = await prisma.cartItem.create({
         data: {
           ...validatedItems,
@@ -79,14 +72,12 @@ export const addToCartAction = async (productId: string) => {
         },
       })
 
-      // Get all cartItems in cart
       const cartItems = await prisma.cartItem.findMany({
         where: {
           cartId: cart.id,
         },
       })
 
-      // Update cart
       await prisma.cart.update({
         where: { id: cart.id },
         data: {
@@ -96,18 +87,12 @@ export const addToCartAction = async (productId: string) => {
       revalidatePath(`/product/${cartItem.slug}`)
       revalidatePath("/cart")
       return { success: true, message: `${cartItem.name} added to the cart` }
-
-      /* ─── else if item is in the cart ─────────────────────────────────────────────────────────────── */
     } else {
-      // INCREMENT functionality
-
-      // Check if product is in stock
       const inStock = product.stock >= existingItem?.qty + 1
       if (!inStock) {
         throw new Error("Product is out of stock")
       }
 
-      // Update cart item
       const updatedCartItem = await prisma.cartItem.update({
         where: {
           id: existingItem?.id,
@@ -117,14 +102,12 @@ export const addToCartAction = async (productId: string) => {
         },
       })
 
-      // Get all cartItems in cart
       const cartItems = await prisma.cartItem.findMany({
         where: {
           cartId: cart.id,
         },
       })
 
-      // Update cart
       await prisma.cart.update({
         where: { id: cart.id },
         data: {
@@ -211,12 +194,10 @@ async function getOrCreateCart() {
   const user = await currentUser()
 
   if (user) {
-    // for signedIn / anonymousUser
     let cart = await prisma.cart.findFirst({
       where: { userId: user.id },
     })
 
-    // if no userCart
     if (!cart) {
       cart = await prisma.cart.create({
         data: {
@@ -230,7 +211,6 @@ async function getOrCreateCart() {
     }
     return cart
   } else {
-    // if no anonymous / signedIn user
     const newUser = await auth.api.signInAnonymous({
       headers: await headers(),
     })
@@ -300,7 +280,6 @@ export const mergeCartsAction = async (userId: string, guestUserId: string) => {
 
     if (!guestCart) return
 
-    // if guestCart is empty remove it
     if (guestCart.cartItems.length === 0) {
       await tx.cart.delete({
         where: {
@@ -310,7 +289,6 @@ export const mergeCartsAction = async (userId: string, guestUserId: string) => {
       return
     }
 
-    // find userCart
     let userCart = await tx.cart.findUnique({
       where: {
         userId,
@@ -318,7 +296,6 @@ export const mergeCartsAction = async (userId: string, guestUserId: string) => {
       include: { cartItems: true },
     })
 
-    // if no userCart create one
     if (!userCart) {
       userCart = await tx.cart.create({
         data: {
@@ -334,15 +311,7 @@ export const mergeCartsAction = async (userId: string, guestUserId: string) => {
       })
     }
 
-    // for each item in guestCart
-    // check if item exist in userCart
-    // if item exist in userCart
-    // update item qty
-    // else create item
-    // update cart
-
     for (const guestItem of guestCart.cartItems) {
-      // for each guestItem perform upsert operation
       await tx.cartItem.upsert({
         where: {
           cartId_productId: {
@@ -367,14 +336,12 @@ export const mergeCartsAction = async (userId: string, guestUserId: string) => {
       })
     }
 
-    // get userCart items
     const userCartItems = await tx.cartItem.findMany({
       where: {
         cartId: userCart.id,
       },
     })
 
-    // update cart
     await tx.cart.update({
       where: {
         id: userCart.id,
@@ -384,7 +351,6 @@ export const mergeCartsAction = async (userId: string, guestUserId: string) => {
       },
     })
 
-    // delete guest cart
     await tx.cart.delete({
       where: {
         id: guestCart.id,

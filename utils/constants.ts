@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker"
-import { Logs, Star, User } from "lucide-react"
+import { Logs, User } from "lucide-react"
 import { FaStar } from "react-icons/fa"
 import { GrUserAdmin } from "react-icons/gr"
 
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Prostore"
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Mercato"
 export const APP_DESCRIPTION =
   process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
   "A modern e-commerce store built with Next.js"
@@ -14,8 +14,6 @@ export const LATEST_PRODUCTS_LIMIT =
 
 export const PAYMENT_METHODS = process.env.PAYMENT_METHODS?.split(", ") || [
   "PayPal",
-  "Stripe",
-  "CashOnDelivery",
 ]
 
 export const pageSize = Number(process.env.PAGE_SIZE) || 5
@@ -24,8 +22,6 @@ export const userUpdateSelectInputs = [
   { value: "user", label: "user" },
   { value: "admin", label: "admin" },
 ]
-
-/* ─── product filter & sort ─────────────────────────────────────────────────────────────── */
 
 export const productCategories = [
   { label: "All", value: "all" },
@@ -62,7 +58,6 @@ export const sortValues = [
   { label: "rating", value: "rating" },
 ]
 
-/* ─── form default values ─────────────────────────────────────────────────────────────── */
 const name = faker.commerce.productName()
 const category = faker.commerce.department()
 const brand = faker.company.name()

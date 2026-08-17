@@ -20,7 +20,6 @@ function UpdateCartItemButton({ cartId, productId, className, qty }: Props) {
 
   const [isPending, startTransition] = useTransition()
 
-  /*  ─── Click handler ─────────────────────────────────────────────────────────────── */
   const clickHandler = async (type: "increment" | "decrement") => {
     startTransition(async () => {
       let result
@@ -32,12 +31,10 @@ function UpdateCartItemButton({ cartId, productId, className, qty }: Props) {
       }
 
       if (result?.success) {
-        // for cart page toast without button
         if (pathname === "/cart") {
           toast.success(result.message)
           return
         } else {
-          // for other pages toast with button
           toast.success(result.message, {
             action: {
               label: "Go To Cart",
@@ -52,12 +49,10 @@ function UpdateCartItemButton({ cartId, productId, className, qty }: Props) {
     })
   }
 
-  /*  ─── Add to cart button ─────────────────────────────────────────────────────────────── */
   if (!qty) {
     return <AddToCartButton isPending={isPending} clickHandler={clickHandler} />
   }
 
-  /*  ─── Plus & Minus buttons ─────────────────────────────────────────────────────────────── */
   return (
     <IncrementDecrementButtons
       isPending={isPending}

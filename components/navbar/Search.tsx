@@ -14,8 +14,6 @@ import { useEffect } from "react"
 function Search() {
   const searchParams = useSearchParams()
 
-  /* ─── useForm ─────────────────────────────────────────────────────────────── */
-
   const { control, handleSubmit } = useForm<ProductSearchUser>({
     defaultValues: {
       category: searchParams.get("category") || "all",
@@ -23,24 +21,18 @@ function Search() {
     },
   })
 
-  /* ─── hooks & watches ─────────────────────────────────────────────────────────────── */
-
   const router = useRouter()
   const pathName = usePathname()
   const categoryWatch = useWatch({ control, name: "category" })
   const searchWatch = useWatch({ control, name: "search" })
 
-  /* ─── useEffect for on change handling ─────────────────────────────────────────────────────────────── */
-
   useEffect(() => {
-    if (!pathName.startsWith("/search")) return // onChange search for search page only
+    if (!pathName.startsWith("/search")) return
     const timer = setTimeout(() => {
       router.replace(`/search?category=${categoryWatch}&search=${searchWatch}`)
     }, 300)
     return () => clearTimeout(timer)
   }, [searchWatch, categoryWatch, pathName, router])
-
-  /* ─── onSubmit Handler ─────────────────────────────────────────────────────────────── */
 
   const submitHandler = async () => {
     router.replace(`/search?category=${categoryWatch}&search=${searchWatch}`)
@@ -51,16 +43,12 @@ function Search() {
       onSubmit={handleSubmit(submitHandler)}
       className="flex items-center justify-center gap-2"
     >
-      {/* ─── Category ───────────────────────────────────────────────────────────────  */}
-
       <SelectInput
         name="category"
         control={control}
         selectValues={productCategories}
         hideLabel={true}
       />
-
-      {/* ─── Search Input ───────────────────────────────────────────────────────────────  */}
 
       <Controller
         name="search"

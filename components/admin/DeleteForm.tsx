@@ -27,8 +27,7 @@ function DeleteForm({ id, path }: Props) {
   const submitHandler = async () => {
     if (path === "products") {
       await deleteProductAction(id)
-      // if last item from current page is deleted
-      // Navigate to the previous page
+
       const { totalPages } = await getAdminProducts(pageSize, currentPage)
       const page =
         currentPage === 1

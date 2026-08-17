@@ -1,5 +1,5 @@
-// components/admin/revenue-chart.tsx
 "use client"
+
 import {
   ChartConfig,
   ChartContainer,
@@ -48,7 +48,7 @@ export function RevenueChart({ data }: { data: MonthlyRevenue[] }) {
                 new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
-                  notation: "compact", // → $1K, $10K
+                  notation: "compact",
                 }).format(value)
               }
             />
@@ -67,7 +67,7 @@ export function RevenueChart({ data }: { data: MonthlyRevenue[] }) {
             <Bar
               dataKey="revenue"
               fill="var(--color-revenue)"
-              radius={[4, 4, 0, 0]} // rounded top corners
+              radius={[4, 4, 0, 0]}
             />
           </BarChart>
         </ChartContainer>

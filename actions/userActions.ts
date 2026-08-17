@@ -1,25 +1,12 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import {
-  signInSchema,
-  signUpSchema,
-  updateUserSchema,
-  userProfileSchema,
-} from "@/utils/schemas"
-import {
-  signInFields,
-  signUpFields,
-  UpdateUserFields,
-  UserProfile,
-} from "@/utils/types"
-import { currentUser } from "@/hooks/currentUser"
+import { updateUserSchema, userProfileSchema } from "@/utils/schemas"
+import { UpdateUserFields, UserProfile } from "@/utils/types"
 import { getAdminUser, getAuthUser, renderError } from "./productActions"
 import { revalidatePath } from "next/cache"
 import { validateWithZod } from "@/utils/utils"
-import { auth } from "@/lib/auth"
 import { isAPIError } from "better-auth/api"
-import { headers } from "next/headers"
 
 export const renderAuthError = async (error: unknown) => {
   const errorMessage =
@@ -27,55 +14,6 @@ export const renderAuthError = async (error: unknown) => {
       ? error.message
       : "there was an error"
   return { success: false, message: errorMessage }
-}
-
-export const signUpAction = async (formData: signUpFields) => {
-  try {
-    const validatedData = await validateWithZod(formData, signUpSchema)
-
-    const { name, email, password } = validatedData
-
-    const userCount = await prisma.user.count()
-
-    await auth.api.signUpEmail({
-      body: {
-        name,
-        email,
-        password,
-        role: userCount === 0 ? "admin" : "user",
-      },
-    })
-
-    return { success: true, message: "Successfully SignedUp" }
-  } catch (error) {
-    return renderAuthError(error)
-  }
-}
-
-export const signInAction = async (
-  formData: signInFields,
-  callbackUrl: string | undefined
-) => {
-  try {
-    const validatedData = await validateWithZod(formData, signInSchema)
-
-    const { email, password } = validatedData
-
-    await auth.api.signInEmail({
-      headers: await headers(),
-      body: {
-        email,
-        password,
-      },
-    })
-    return { success: true, message: "", redirectTo: callbackUrl || "/" }
-  } catch (error) {
-    const errorMessage =
-      isAPIError(error) || error instanceof Error
-        ? error.message
-        : "there was an error"
-    return { success: false, message: errorMessage, redirectTo: null }
-  }
 }
 
 export const updateUserInfo = async (formData: UserProfile) => {

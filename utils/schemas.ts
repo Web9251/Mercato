@@ -1,39 +1,6 @@
 import * as z from "zod"
 import { PAYMENT_METHODS } from "./constants"
 
-export const signInSchema = z.object({
-  email: z.email({ message: "Email required" }),
-  password: z.string().min(1, { message: "Password required" }),
-})
-
-export const signUpSchema = z
-  .object({
-    name: z.string().min(2, { message: "At least 2 characters required" }),
-
-    email: z.email({ message: "Email required" }),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters long" }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters long" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords does not match",
-    path: ["confirmPassword"], // error appears on confirmPassword field
-  })
-
-const maxSizeMB = 4
-const types = ["image/jpeg", "image/png", "image/webp"]
-const imageSchema = z
-  .instanceof(File)
-  .refine((file) => file.size <= maxSizeMB * 1024 * 1024, {
-    message: `Max image size is ${maxSizeMB}`,
-  })
-  .refine((file) => types.includes(file.type), {
-    message: "Unsupported file type",
-  })
-
 const currency = z.coerce
   .string()
   .regex(/^\d+(\.\d{1,2})?$/, {
@@ -51,9 +18,7 @@ export const productSchema = z.object({
   description: z
     .string()
     .min(3, { message: "Description must be at least 3 characters" }),
-  // price: z.coerce.number().refine((val) => Number.isInteger(val * 100), {
-  //   message: "Price must be at most 2 decimal places",
-  // }),
+
   price: currency,
   stock: z.coerce
     .number()
@@ -172,7 +137,6 @@ export const updateUserSchema = z.object({
   email: z.email({ message: "Email is required" }),
   name: z.string().min(2, { message: "At least 2 characters required" }),
   role: z.union([z.literal("user"), z.literal("admin")]),
-  // role: z.string().min(1, { message: "Role is required" }),
 })
 
 export const reviewSchema = z.object({

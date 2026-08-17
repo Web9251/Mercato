@@ -18,10 +18,6 @@ function Score({ productRating, totalReviews }: Props) {
         <span className="text-muted-foreground mb-1 text-sm">/ 5</span>
       </div>
       <div className="flex items-center gap-2 mt-1">
-        {/* <Stars
-                  value={Math.round(parseFloat(productRating.toString()))}
-                  size={15}
-                /> */}
         <Rating rate={productRating} />
         <span className="text-xs text-muted-foreground">
           {totalReviews.toLocaleString()} reviews

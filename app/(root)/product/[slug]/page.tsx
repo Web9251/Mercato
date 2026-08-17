@@ -25,7 +25,7 @@ async function SingleProductPage({ params }: { params: { slug: string } }) {
     <section>
       <SingleProduct product={singleProduct} stock={singleProduct.stock} />
       <ReviewSection
-        userReview={userReview} // to check if user has given a review for the product
+        userReview={userReview}
         initialReviews={initialReviews}
         user={user}
         productRating={productRating}

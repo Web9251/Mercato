@@ -40,7 +40,6 @@ export function getPagination(currentPage: number, totalPages: number) {
   )
 }
 
-// Shorten UUID
 export function formatId(id: string) {
   return `..${id.substring(id.length - 6)}`
 }
@@ -77,7 +76,6 @@ export function getExtension(name: string): string {
   return (name.split(".").pop() ?? "file").toUpperCase()
 }
 
-// Generate slug
 export const generateSlug = <T extends FieldValues>(
   name: string,
   setValue: UseFormSetValue<T>,
@@ -94,6 +92,6 @@ export const generateSearchLink = (
 ) => {
   const params = new URLSearchParams(searchParams)
   params.set(filter, value)
-  params.set("page", "1") // always set to page 1
+  params.set("page", "1")
   return `search?${params.toString()}`
 }

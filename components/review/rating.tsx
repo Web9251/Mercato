@@ -53,7 +53,6 @@ const Rating = ({ rate, className, showScore, description }: RatingProps) => {
     return stars
   }
 
-  // If only score is shown (no description), use horizontal layout
   if (showScore && !description) {
     return (
       <div
@@ -68,7 +67,6 @@ const Rating = ({ rate, className, showScore, description }: RatingProps) => {
     )
   }
 
-  // If description is provided, use vertical layout
   if (description) {
     return (
       <div className={cn("flex flex-col gap-1", className)}>
@@ -83,7 +81,6 @@ const Rating = ({ rate, className, showScore, description }: RatingProps) => {
     )
   }
 
-  // Default: just stars
   return (
     <div
       className={cn(

@@ -10,9 +10,6 @@ import TextareaInput from "../form/TextareaInput"
 import SelectInput from "../form/SelectInput"
 import SubmitButton from "../form/SubmitButton"
 import { ratings } from "@/utils/constants"
-import { createReview } from "@/actions/reviewAction"
-import { useParams } from "next/navigation"
-import { toast } from "sonner"
 import { Review } from "@/generated/prisma/client"
 
 type Props = {

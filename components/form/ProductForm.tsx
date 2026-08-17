@@ -20,7 +20,6 @@ import {
   createProductAction,
   editProductAction,
 } from "@/actions/productActions"
-import { useRouter } from "next/navigation"
 import { X } from "lucide-react"
 import { generateSlug } from "@/utils/utils"
 import { deleteUploadthingFiles } from "@/lib/delete-uploadthing-files"
@@ -31,8 +30,6 @@ import { Product } from "@/generated/prisma/client"
 
 function ProductForm({ productStr }: { productStr?: string }) {
   const product = productStr ? SuperJSON.parse<Product>(productStr) : null
-
-  /* ─── useForm Hook ─────────────────────────────────────────────────────────────── */
 
   const {
     control,
@@ -60,14 +57,10 @@ function ProductForm({ productStr }: { productStr?: string }) {
       : createProductDefaultValues,
   })
 
-  /* ─── Form Watches ─────────────────────────────────────────────────────────────── */
-
   const imagesWatch = watch("images")
   const isFeaturedWatch = watch("isFeatured")
   const bannerWatch = watch("banner")
   const nameWatch = watch("name")
-
-  /* ─── Custom Classes ─────────────────────────────────────────────────────────────── */
 
   const btnClass = !isFeaturedWatch
     ? "hidden"
@@ -76,24 +69,16 @@ function ProductForm({ productStr }: { productStr?: string }) {
       : "block"
   const bannerClass = isFeaturedWatch ? "block" : "hidden"
 
-  /* ─── Hooks & Others ─────────────────────────────────────────────────────────────── */
-
-  const router = useRouter()
   const [imageKeys, setImageKeys] = useState<string[]>([])
   const [bannerKey, setBannerKey] = useState<string>("")
   const [isPending, startTransition] = useTransition()
   const [deletingKey, setDeletingKey] = useState<string>()
 
-  /* ─── Handle Delete ─────────────────────────────────────────────────────────────── */
-
   const handleDelete = async (key: string, type: "image" | "banner") => {
-    // for updating
     if (product) {
-      // banner
       if (type === "banner") {
         setValue("banner", undefined)
       }
-      // images
       setImageKeys([...imageKeys, key])
       const currentImages: UploadImage[] = getValues("images") || []
       const filteredImages = currentImages
@@ -101,22 +86,18 @@ function ProductForm({ productStr }: { productStr?: string }) {
         : []
       setValue("images", [...filteredImages])
     } else {
-      // for creating
       startTransition(async () => {
-        // delete from uploadThing
         try {
           await deleteUploadthingFiles(key)
         } catch (error) {
           toast.error("Failed to delete image")
           return
         }
-        // remove banner from form
         if (type === "banner") {
           setValue("banner", undefined)
           toast.success("Banner removed")
           return
         } else {
-          // remove images from form
           const currentImages: UploadImage[] = getValues("images") || []
 
           const filteredImages = currentImages
@@ -130,10 +111,7 @@ function ProductForm({ productStr }: { productStr?: string }) {
     }
   }
 
-  /* ─── Submit Handler ─────────────────────────────────────────────────────────────── */
-
   const submitHandler = async (formData: productFields) => {
-    // for updating
     if (product) {
       try {
         await deleteUploadthingFiles(bannerKey, imageKeys)
@@ -148,9 +126,7 @@ function ProductForm({ productStr }: { productStr?: string }) {
         return
       }
       toast.success(result.message)
-      // router.refresh()
     } else {
-      // for creating
       const result = await createProductAction(formData)
       if (!result.success) {
         toast.error(result.message)
@@ -165,7 +141,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
     <form onSubmit={handleSubmit(submitHandler)}>
       <FieldGroup>
         <div className="grid md:grid-cols-2 gap-4">
-          {/* ─── Name ─────────────────────────────────────────────────────────────── */}
           <Controller
             name="name"
             control={control}
@@ -190,7 +165,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
             }}
           />
 
-          {/* ─── Slug ─────────────────────────────────────────────────────────────── */}
           <div>
             <TextInput control={control} name="slug" />
             <Button
@@ -202,24 +176,14 @@ function ProductForm({ productStr }: { productStr?: string }) {
             </Button>
           </div>
 
-          {/* ─── Category ─────────────────────────────────────────────────────────────── */}
-
           <TextInput control={control} name="category" />
-
-          {/* ─── Brand ─────────────────────────────────────────────────────────────── */}
 
           <TextInput control={control} name="brand" placeholder="Enter brand" />
 
-          {/* ─── Price ─────────────────────────────────────────────────────────────── */}
-
           <TextInput control={control} name="price" type="number" />
-
-          {/* ─── Stock ─────────────────────────────────────────────────────────────── */}
 
           <TextInput control={control} name="stock" type="number" />
         </div>
-
-        {/* ─── Images ─────────────────────────────────────────────────────────────── */}
 
         <Controller
           name="images"
@@ -230,8 +194,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                 <FieldLabel>Images</FieldLabel>
                 <Card className="dark:bg-transparent">
                   <CardContent className="space-y-2 mt- min-h-48">
-                    {/* ─── Images Container ─────────────────────────────────────────────────────────────── */}
-
                     <div className="flex space-x-2 ">
                       {imagesWatch &&
                         imagesWatch.map((image) => {
@@ -268,8 +230,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                     </div>
 
                     <div className="flex">
-                      {/* ─── Image Upload Button ─────────────────────────────────────────────────────────────── */}
-                      {/* Upload image and set image values */}
                       <UploadButton
                         endpoint="imageUploader"
                         onClientUploadComplete={(
@@ -280,7 +240,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                             size: number
                           }[]
                         ) => {
-                          // after upload finished set images value
                           setValue("images", [
                             ...imagesWatch,
                             {
@@ -291,7 +250,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                             },
                           ])
                         }}
-                        // if upload error toast error
                         onUploadError={(error: Error) => {
                           toast.error(`ERROR! ${error.message}`)
                         }}
@@ -307,8 +265,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
             )
           }}
         />
-
-        {/* ─── Featured  ─────────────────────────────────────────────────────────────── */}
 
         <Card className="dark:bg-transparent">
           <CardContent>
@@ -327,7 +283,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                         id="featured"
                         aria-invalid={fieldState.invalid}
                         onCheckedChange={(checked) => {
-                          // to delete banner from uploadThing if unchecked when updating
                           if (product && !checked) {
                             setBannerKey(bannerWatch?.key ?? "")
                           }
@@ -340,8 +295,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                       </FieldLabel>
                     </div>
                     <div>
-                      {/* ─── Banner   ─────────────────────────────────────────────────────────────── */}
-
                       {bannerWatch && (
                         <div className="relative overflow-hidden">
                           <Image
@@ -368,11 +321,8 @@ function ProductForm({ productStr }: { productStr?: string }) {
                         </div>
                       )}
 
-                      {/* ─── UploadThing Button   ─────────────────────────────────────────────────────────────── */}
-
                       <UploadButton
                         endpoint="imageUploader"
-                        // when upload finished set banner value
                         onClientUploadComplete={(
                           res: { ufsUrl: string; key: string }[]
                         ) => {
@@ -381,7 +331,6 @@ function ProductForm({ productStr }: { productStr?: string }) {
                             key: res[0].key,
                           })
                         }}
-                        // if error on upload toast error
                         onUploadError={(error: Error) => {
                           toast.error(`ERROR! ${error.message}`)
                         }}
@@ -395,10 +344,8 @@ function ProductForm({ productStr }: { productStr?: string }) {
           </CardContent>
         </Card>
 
-        {/* ─── Description ─────────────────────────────────────────────────────────────── */}
         <TextareaInput control={control} name="description" />
 
-        {/* ─── Submit Button ─────────────────────────────────────────────────────────────── */}
         <SubmitButton
           text={`${product ? "update product" : "create product"}`}
           loadingText={`${product ? "updating product..." : "creating product..."}`}

@@ -13,7 +13,7 @@ type Props = {
 
 function SignInButton({ children, asChild, mode = "redirect" }: Props) {
   const router = useRouter()
-  const pathName = usePathname() // pass it as a callback
+  const pathName = usePathname()
 
   const onClick = () => {
     router.push(`/sign-in?callbackUrl=${pathName}`)
@@ -22,10 +22,7 @@ function SignInButton({ children, asChild, mode = "redirect" }: Props) {
   if (mode === "modal")
     return (
       <Dialog>
-        <DialogTrigger asChild={asChild}>
-          {/* here sign in button is place to trigger the modal */}
-          {children}
-        </DialogTrigger>
+        <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
         <DialogContent className="w-fit h-fit min-w-none p-0 shadow-none border-none ring-0 gap-0 overflow-hidden">
           <DialogTitle className="hidden">Sign in form</DialogTitle>
           <SignInForm callbackUrl={pathName} />

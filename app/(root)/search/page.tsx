@@ -20,8 +20,6 @@ type Props = {
 async function SearchPage({ searchParams }: Props) {
   const { search, price, category, sort, page, rating } = await searchParams
 
-  /* ─── get all product ─────────────────────────────────────────────────────────────── */
-
   const { products, totalPages } = await getAllProducts({
     search,
     price,
@@ -31,25 +29,19 @@ async function SearchPage({ searchParams }: Props) {
     rating,
   })
 
-  /* ─── current filter keys to be displayed ─────────────────────────────────────────────────────────────── */
-
   const filters = { search, price, category, rating }
 
-  // convert it as an array of array to render as key value pair
   const visibleFilters = Object.entries(filters).filter(
     ([_, value]) => value && value !== "all"
   )
 
   return (
     <section className="md:grid md:grid-cols-4 w-full">
-      {/* ─── Side Filters ───────────────────────────────────────────────────────────────  */}
       <div className="col-span-1 ">
         <SideFilter />
       </div>
       <div className="md:col-span-3 mt-6 md:mt-0">
         <div className="flex flex-col md:flex-row justify-between mb-4 items-center">
-          {/* ─── current filters ───────────────────────────────────────────────────────────────  */}
-
           <div className="flex gap-2 items-center justify-center ">
             <p>
               {visibleFilters.map(([key, value]) => (
@@ -66,21 +58,17 @@ async function SearchPage({ searchParams }: Props) {
             )}
           </div>
 
-          {/* ─── Sort ───────────────────────────────────────────────────────────────  */}
-
           <div className="flex gap-2">
             <p className="capitalize ">sort by</p>
             <Sort />
           </div>
         </div>
-        {/* ─── Products ───────────────────────────────────────────────────────────────  */}
+
         <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6">
           {products.map((product, index) => {
             return <ProductContainer key={index} product={product} />
           })}
         </div>
-
-        {/* ─── Pagination ───────────────────────────────────────────────────────────────  */}
 
         <div className="my-10">
           <PaginationContainer

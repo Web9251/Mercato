@@ -13,7 +13,7 @@ import {
 import ReviewForm from "../review/ReviewForm"
 import { Review } from "@/generated/prisma/client"
 import { createReview, updateReview } from "@/actions/reviewAction"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import {
   OnReviewChange,
   ReviewFieldsInput,
@@ -33,7 +33,6 @@ export default function ReviewModal({ userReview, onReviewChange }: Props) {
   const params = useParams<{ slug: string }>()
 
   const submitHandler = async (formData: ReviewFieldsInput) => {
-    // creating state
     if (!userReview && onReviewChange) {
       const result = await createReview(formData, params.slug)
       if (!result.success) {
@@ -46,10 +45,8 @@ export default function ReviewModal({ userReview, onReviewChange }: Props) {
           newReview: result.data as ReviewWithUser,
           state: "create",
         })
-        // router.refresh() does work because its rendering reviews from local state
       }
     } else {
-      // updating state
       const result = await updateReview(formData, params.slug)
       if (!result.success) {
         toast.error(result.message)
@@ -66,7 +63,6 @@ export default function ReviewModal({ userReview, onReviewChange }: Props) {
   }
 
   return (
-    // onOpenChange => set true/false value to the state
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {userReview ? (
@@ -93,7 +89,6 @@ export default function ReviewModal({ userReview, onReviewChange }: Props) {
           </DialogDescription>
         </DialogHeader>
 
-        {/*  ─── Review Form ─────────────────────────────────────────────────────────────── */}
         <ReviewForm userReview={userReview} submitHandler={submitHandler} />
 
         <DialogFooter className="dark:bg-transparent"></DialogFooter>

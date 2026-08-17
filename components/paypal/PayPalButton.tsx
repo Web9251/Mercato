@@ -1,4 +1,3 @@
-// components/paypal-button.tsx
 "use client"
 
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
@@ -10,24 +9,11 @@ import { toast } from "sonner"
 function PrintLoadingState() {
   return (
     <div className="space-y-2">
-      {/* mimics PayPal button height */}
       <div className="h-11.25 w-full animate-pulse rounded-md bg-muted" />
       <div className="h-11.25 w-full animate-pulse rounded-md bg-muted" />
     </div>
   )
 }
-
-// const PrintLoadingState = () => {
-//   const [{ isPending, isRejected }] = usePayPalScriptReducer()
-//   let status = ""
-
-//   if (isPending) {
-//     status = "Loading PayPal..."
-//   } else if (isRejected) {
-//     status = "Error Loading PayPal"
-//   }
-//   return status
-// }
 
 export function PayPalButton({ orderId }: { orderId: string }) {
   const [{ isPending, isRejected }] = usePayPalScriptReducer()
@@ -47,7 +33,7 @@ export function PayPalButton({ orderId }: { orderId: string }) {
 
       <PayPalButtons
         style={{ layout: "vertical" }}
-        disabled={isPaying} // ✅ disables the button during transition
+        disabled={isPaying}
         createOrder={async () => {
           try {
             return await createPayPalOrder(orderId)
@@ -60,7 +46,6 @@ export function PayPalButton({ orderId }: { orderId: string }) {
         }}
         onApprove={async (data) => {
           startTransition(async () => {
-            // ✅ wrap capture in transition
             try {
               await capturePayPalOrder(data.orderID, orderId)
               toast.success("Payment successful!")

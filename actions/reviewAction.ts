@@ -110,7 +110,6 @@ export const getAllReviews = async ({
       }),
     ])
 
-  // const allRatingCounts = [rating5, rating4, rating3, rating4, rating5]
   const ratingData = [
     { stars: 5, count: rating5, color: "bg-emerald-500" },
     { stars: 4, count: rating4, color: "bg-green-400" },
@@ -122,7 +121,7 @@ export const getAllReviews = async ({
   return {
     reviews,
     totalReviews,
-    hasMore: page * REVIEWS_PER_PAGE < totalReviews, // tells client if more exist
+    hasMore: page * REVIEWS_PER_PAGE < totalReviews,
     ratingData,
   }
 }

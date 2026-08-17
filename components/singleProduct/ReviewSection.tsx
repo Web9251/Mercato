@@ -6,7 +6,6 @@ import SignInButton from "../form/SignInButton"
 import { Review } from "@/generated/prisma/client"
 import { getAllReviews } from "@/actions/reviewAction"
 import { SessionUser } from "@/utils/types"
-
 import ReviewsContainer from "@/components/review/ReviewsContainer"
 
 type Props = {
@@ -30,7 +29,6 @@ function ReviewSection({
         <p className="mt-6">No reviews yet</p>
       )}
 
-      {/* if no user - sign-in */}
       {user?.isAnonymous ||
         (!user && (
           <div className="mt-4">
@@ -44,7 +42,6 @@ function ReviewSection({
           </div>
         ))}
 
-      {/* if there is user */}
       <div className="mt-4 ">
         <ReviewsContainer
           productRating={productRating}

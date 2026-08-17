@@ -26,17 +26,13 @@ export default function ReviewsContainer({
   userReview,
   user,
 }: Props) {
-  /* ─── states ─────────────────────────────────────────────────────────────── */
   const [reviews, setReviews] = useState(initialReviews.reviews)
   const [hasMore, setHasMore] = useState(initialReviews.hasMore)
   const pageRef = useRef(1)
 
-  /* ─── hooks & others ─────────────────────────────────────────────────────────────── */
-
   const [isPending, startTransition] = useTransition()
   const params = useParams<{ slug: string }>()
 
-  /* ─── loadMore func ─────────────────────────────────────────────────────────────── */
   const loadMore = () => {
     startTransition(async () => {
       pageRef.current += 1
@@ -46,14 +42,11 @@ export default function ReviewsContainer({
         page: pageRef.current,
       })
 
-      setReviews((prev) => [...prev, ...data.reviews]) // previous reviews + nextPage reviews combined
+      setReviews((prev) => [...prev, ...data.reviews])
       setHasMore(data.hasMore)
     })
   }
 
-  /* ─── onReviewChange func ─────────────────────────────────────────────────────────────── */
-
-  //  called from ReviewModal after successful submit
   const onReviewChange: OnReviewChange = ({ newReview, state }) => {
     if (state === "create") {
       setReviews((prev) => [newReview, ...prev])
@@ -67,20 +60,17 @@ export default function ReviewsContainer({
   const { totalReviews, ratingData } = initialReviews
   return (
     <section>
-      {/* // if there is user & no reviews show write review button/modal */}
       {reviews.length === 0 && user && !user?.isAnonymous && (
         <div className="mt-4">
           <ReviewModal
             userReview={userReview}
-            onReviewChange={onReviewChange} // the reason local states are here
+            onReviewChange={onReviewChange}
           />
         </div>
       )}
       <div className="py-10">
-        {initialReviews.totalReviews > 0 && ( // if there are reviews display
+        {initialReviews.totalReviews > 0 && (
           <div className="lg:grid lg:grid-cols-[1fr_2fr] lg:gap-12 lg:items-start">
-            {/* ─── Left / top: Rating summary ───────────────────────────────────────────────────────────────  */}
-
             <RatingSummary
               totalReviews={totalReviews}
               ratingData={ratingData}
@@ -92,12 +82,8 @@ export default function ReviewsContainer({
 
             <Separator className="my-8 lg:hidden" />
 
-            {/* ───  Reviews & loadMore button  ───────────────────────────────────────────────────────────────  */}
-
             <div>
               <div className="flex flex-col">
-                {/* ───  Review items separated by dividers  ───────────────────────────────────────────────────────────────  */}
-
                 {reviews.map((review) => {
                   const isOwn = review.userId === user?.id
                   return (
@@ -111,14 +97,11 @@ export default function ReviewsContainer({
                   )
                 })}
 
-                {/* ───  loadMore Button  ───────────────────────────────────────────────────────────────  */}
-
                 {hasMore && (
                   <div className="pt-4">
                     <Button
                       variant="outline"
                       className="w-full gap-2"
-                      // onClick={() => setVisible((v) => v + PAGE_SIZE)}
                       onClick={loadMore}
                     >
                       {isPending ? (

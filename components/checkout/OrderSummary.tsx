@@ -32,7 +32,6 @@ function OrderSummary({
         <PriceRow text="shipping" price={shippingPrice} />
         <PriceRow text="total" price={totalPrice} />
 
-        {/* ─── PayPal Payment ─────────────────────────────────────────────────────────────── */}
         {showPaypal && !isPaid && paymentMethod === "PayPal" && (
           <PayPalButton orderId={dbOrderId} />
         )}

@@ -1,11 +1,9 @@
 import { getAllProducts } from "@/actions/productActions"
 import ProductsContainerAdmin from "@/components/admin/ProductsContainerAdmin"
-import EmptyPage from "@/components/global/EmptyPage"
 import EmptyProducts from "@/components/global/EmptyProducts"
 import SectionTitle from "@/components/global/SectionTitle"
 import { Button } from "@/components/ui/button"
 import PaginationContainer from "@/components/user/PaginationContainer"
-import { pageSize } from "@/utils/constants"
 import Link from "next/link"
 import SuperJSON from "superjson"
 
@@ -17,7 +15,7 @@ type Props = {
 }
 
 async function AdminProductsPage({ searchParams }: Props) {
-  const page = (await searchParams).page || "1" // function takes page as a string
+  const page = (await searchParams).page || "1"
   const search = (await searchParams).search
   const products = await getAllProducts({ page, search })
 
