@@ -10,7 +10,7 @@ type Props = {
 
 function CardWrapper({ headerTitle, headerSubText, callbackUrl }: Props) {
   return (
-    <Card className="dark:bg-transparent px-12 w-100 md:w-120 mb-6">
+    <Card className="dark:bg-transparent px-12 w-100 md:w-96">
       <CardHeader>
         <Header headerTitle={headerTitle} headerSubText={headerSubText} />
       </CardHeader>
