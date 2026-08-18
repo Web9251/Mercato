@@ -23,9 +23,7 @@ function TrustBar() {
       <div className="flex flex-col gap-1">
         <BsFillCreditCard2BackFill size={25} />
         <p className="capitalize font-bold">Flexible Payment</p>
-        <p className="text-sm text-muted-foreground ">
-          Pay with credit card, PayPal or COD
-        </p>
+        <p className="text-sm text-muted-foreground ">Pay with PayPal</p>
       </div>
       <div className="flex flex-col gap-1">
         <BiSupport size={25} />
