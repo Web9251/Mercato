@@ -1,7 +1,6 @@
 import Container from "../global/Container"
 import { Separator } from "../ui/separator"
 import CartButton from "./CartButton"
-import Categories from "./Categories"
 import Logo from "./Logo"
 import { ModeToggle } from "./ModeToggle"
 import NavLinksUser from "./NavlinksUser"
@@ -13,7 +12,6 @@ function NavbarUser() {
     <div className="mb-5">
       <Container className="flex justify-between py-6 items-center">
         <div className="flex items-center justify-center gap-4">
-          <Categories />
           <Logo />
         </div>
         <div className="hidden md:flex">
