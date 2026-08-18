@@ -15,7 +15,7 @@ function Logo({ type = "showText" }: Prop) {
         fill="black"
         className="dark:fill-white"
       />
-      <h2 className={`text-2xl font-bold ${show}`}>Mercato</h2>
+      <h2 className={`text-xl md:text-2xl font-bold ${show}`}>Mercato</h2>
     </Link>
   )
 }

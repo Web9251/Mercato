@@ -10,14 +10,14 @@ import NavLinks from "@/components/navbar/NavLink"
 function Navbar() {
   return (
     <div className="mb-5">
-      <Container className="flex justify-between py-6">
+      <Container className="flex justify-between items-center py-6">
         <div className="flex items-center justify-center gap-4">
           <Logo />
         </div>
         <div className="hidden md:flex">
           <Search />
         </div>
-        <div className="flex gap-3">
+        <div className="flex justify-center items-center gap-3">
           <ModeToggle />
           <CartButton />
           <NavLinks />
