@@ -1,3 +1,4 @@
+import Footer from "@/components/user/Footer"
 import { Card, CardHeader } from "../ui/card"
 import Header from "./Header"
 import Social from "./Social"
@@ -15,6 +16,7 @@ function CardWrapper({ headerTitle, headerSubText, callbackUrl }: Props) {
         <Header headerTitle={headerTitle} headerSubText={headerSubText} />
       </CardHeader>
       <Social callbackUrl={callbackUrl} />
+      <Footer footerLink="/" footerLinkLabel="Back to home" />
     </Card>
   )
 }
