@@ -19,7 +19,7 @@ async function ShippingAddressPage() {
   })
 
   if (session && session.user.isAnonymous) {
-    redirect("/sign-in?callbackUrl=shipping-address")
+    redirect("/sign-in?callbackUrl=/shipping-address")
   }
 
   const cart = await getCart()
